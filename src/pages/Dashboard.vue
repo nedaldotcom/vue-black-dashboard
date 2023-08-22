@@ -133,6 +133,7 @@
   import TaskList from './Dashboard/TaskList';
   import UserTable from './Dashboard/UserTable';
   import config from '@/config';
+  import axios from 'axios';
 
   export default {
     components: {
@@ -144,11 +145,7 @@
     data() {
       return {
         bigLineChart: {
-          allData: [
-            [100, 70, 90, 70, 85, 60, 75, 60, 90, 80, 110, 100],
-            [80, 120, 105, 110, 95, 105, 90, 100, 80, 95, 70, 120],
-            [60, 80, 65, 130, 80, 105, 90, 130, 70, 115, 60, 130]
-          ],
+          allData: [],
           activeIndex: 0,
           chartData: {
             datasets: [{ }],
@@ -238,6 +235,23 @@
       }
     },
     methods: {
+        async fetchData() {
+          // try {
+          //   const response = await axios.get('https://localhost:7017/api/Vue/Get'); // Replace with your API endpoint URL
+          //   console.log(response.data);
+          //   this.bigLineChart.allData = response.data;
+          // } catch (error) {
+          //   console.error('Error fetching data:', error);
+          // }
+          try {
+            const response = await axios.get('https://localhost:7017/api/Vue/Get');
+            console.log(response.data);
+            this.bigLineChart.allData = response.data;
+            this.initBigChart(0);
+          } catch (error) {
+            console.error('Error fetching data:', error);
+          }
+        },
       initBigChart(index) {
         let chartData = {
           datasets: [{
@@ -263,6 +277,8 @@
       }
     },
     mounted() {
+      console.log('Component mounted');
+      this.fetchData();
       this.i18n = this.$i18n;
       if (this.enableRTL) {
         this.i18n.locale = 'ar';
